@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <script> fetch('/member/all',{method:'GET'});</script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<style>
+    body{
+        background-color: burlywood;
+    }
+    tr{
+        background-color: bisque;
+    }
+    .custab{
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 5% 0;
+    box-shadow: 3px 3px 2px #ccc;
+    transition: 0.5s;
+    }
+.custab:hover{
+    box-shadow: 3px 3px 0px transparent;
+    transition: 0.5s;
+    }
+        #custom-search-form {
+        margin:0;
+        margin-top: 5px;
+        padding: 0;
+    }
+ 
+    #custom-search-form .search-query {
+        padding-right: 3px;
+        padding-right: 4px \9;
+        padding-left: 3px;
+        padding-left: 4px \9;
+        /* IE7-8 doesn't have border-radius, so don't indent the padding */
+ 
+        margin-bottom: 0;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        -webkit-transition: width  0.2s ease-in-out;
+    -moz-transition:width  0.2s ease-in-out;
+    -o-transition: width  0.2s ease-in-out;
+    transition: width  0.2s ease-in-out;
+    }
+ 
+    #custom-search-form button {
+        border: 0;
+        background: none;
+        /** belows styles are working good */
+        padding: 2px 5px;
+        margin-top: 2px;
+        position: relative;
+        left: -28px;
+        /* IE7-8 doesn't have border-radius, so don't indent the padding */
+        margin-bottom: 0;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+    }
+ 
+    .search-query:focus + button {
+        z-index: 3;   
+    }   
+    .search-query:focus{
+        width: 260px;
+    }   
+
+</style>
+</head>
+<body>
+    <div class="container">
+    <div class="row col-md-6 col-md-offset-2 custyle">
+    <table class="table table-striped custab">
+    <thead>
+    <div class="container">
+	<div class="row">
+    <h2>חפש חבר מועדון</h2>
+        <div class="span12">
+            <form id="custom-search-form" class="form-search form-horizontal pull-right">
+                <div class="input-append span12">
+                     <input type="text" id="input" class="search-query mac-style" placeholder="Search" aria-label="Search" />
+                
+                    
+  <div  >
+    <h3><ul style="color: black;" id="suggestions"></ul></h3>
+  </div>
+                </div>
+            </form>
+        </div>
+	</div>
+</div>
+        <tr>
+            <th>אימייל</th>
+            <th>שם פרטי</th>
+            <th>שם משפחה</th>
+            <th>טלפון</th>
+            <th>כתובת</th>
+            <th>גיל</th>
+            <th>עריכה</th>
+        </tr>
+    </thead>
+   
+            {{#each member}}
+            <tr>
+                <td>{{this.Email}}</td>
+                <td>{{this.Name}}</td>
+                <td>{{this.Lastname}}</td>
+                <td>{{this.Phone}}</td>
+                <td>{{this.Address}}</td>
+                <td>{{this.Age}}</td>
+                
+                <td><button class="btn btn-primary btn-xl" onClick="del('{{this.Email}}')" >מחק חבר מועדון</button></td>
+            </tr>
+            {{/each}}
+    </table>
+    </div>
+</div>
+<script>
+    function del(Email){
+fetch(`/member/del/${Email}`,{method:'GET'}).then((res)=>{
+            return res.json()}).then((data)=>{    
+                location.reload();
+                })
+
+}
+
+
+</script>
+
+</body>
+
+       <script>
+        var requestOptions = {
+  method: 'GET',
+  redirect: 'follow'
+};
+var search = []; 
+ fetch("/member/all2", requestOptions)
+  .then(response => response.text()).then((namedata)=>{
+      var arr = namedata.split('"');
+      arr.forEach(val =>{
+        if(val.length>1)
+        search.push(val);
+      })
+      
+ let inputField = document.getElementById('input');
+                        let ulField = document.getElementById('suggestions');
+                        inputField.addEventListener('input', changeAutoComplete);
+                        ulField.addEventListener('click', selectItem);
+
+                        function changeAutoComplete({ target }) {
+                            let data = target.value;
+                            ulField.innerHTML = ``;
+                            if (data.length) {
+                            let autoCompleteValues = autoComplete(data);
+                 
+                            autoCompleteValues.forEach(value => { addItem(value); });
+                 
+                            }
+                        }
+                        function autoComplete(inputValue) {
+
+                            let destination = search;
+                            return destination.filter((value) => value.toLowerCase().includes(inputValue.toLowerCase()));
+                        }
+
+                        function addItem(value) {
+                            ulField.innerHTML = ulField.innerHTML + `<li>${value}</li>`;
+                        }
+
+                        function selectItem({ target }) {
+                            if (target.tagName === 'LI') {
+                            inputField.value = target.textContent;
+                            ulField.innerHTML = ``;
+                            }
+                        }
+
+
+  })
+                       
+                       </script>
+</html>
+
+
