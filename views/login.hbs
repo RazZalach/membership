@@ -11712,7 +11712,7 @@ p {
             return res.json()}).then((data)=>{
             var popup = document.getElementById("myPopup").classList.toggle("show");
               document.getElementById("myPopup").innerHTML = data.msg;                
-           setTimeout(function(){ window.location.reload(); }, 5000);
+           setTimeout(function(){ window.location.replace("/"); }, 5000);
                 })
                 
         }
